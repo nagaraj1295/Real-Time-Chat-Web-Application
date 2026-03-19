@@ -1,20 +1,32 @@
 import React, { useState } from 'react'
 import { useAuthStore } from '../store/useAuthStore'
 import { Link } from 'react-router-dom'
-import { Eye, EyeOff, Loader2, MessageSquare, Mail, Lock } from 'lucide-react'
+import { Eye, EyeOff, Loader2, MessageSquare, User, Mail, Lock } from 'lucide-react'
+import toast from 'react-hot-toast'
 
-const LoginPage = () => {
+const SignupPage = () => {
   const [showPassword, setShowPassword] = useState(false)
   const [formData, setFormData] = useState({
+    fullName: '',
     email: '',
     password: '',
   })
 
-  const { login, isLoggingIn } = useAuthStore()
+  const { signup, isSigningUp } = useAuthStore()
 
-  const handleSubmit = async (e) => {
+  const validateForm = () => {
+    if (!formData.fullName.trim()) return toast.error('Full name is required')
+    if (!formData.email.trim()) return toast.error('Email is required')
+    if (!/\S+@\S+\.\S+/.test(formData.email)) return toast.error('Invalid email format')
+    if (!formData.password) return toast.error('Password is required')
+    if (formData.password.length < 6) return toast.error('Password must be at least 6 characters')
+    return true
+  }
+
+  const handleSubmit = (e) => {
     e.preventDefault()
-    login(formData)
+    const success = validateForm()
+    if (success === true) signup(formData)
   }
 
   return (
@@ -28,12 +40,30 @@ const LoginPage = () => {
               <div className="size-12 rounded-xl bg-primary/10 flex items-center justify-center group-hover:bg-primary/20 transition-colors">
                 <MessageSquare className="size-6 text-primary" />
               </div>
-              <h1 className="text-2xl font-bold mt-2 text-white">Welcome Back</h1>
-              <p className="text-gray-400">Sign in to your account</p>
+              <h1 className="text-2xl font-bold mt-2 text-white">Create Account</h1>
+              <p className="text-gray-400">Get started with your free account</p>
             </div>
           </div>
 
           <form onSubmit={handleSubmit} className="space-y-6">
+            <div className="form-control">
+              <label className="label">
+                <span className="label-text font-medium text-gray-300">Full Name</span>
+              </label>
+              <div className="relative">
+                <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                  <User className="size-5 text-gray-500" />
+                </div>
+                <input
+                  type="text"
+                  className={`input input-bordered w-full pl-10 bg-white/5 border-white/10 text-white focus:border-primary focus:ring-1 focus:ring-primary h-12 rounded-lg`}
+                  placeholder="John Doe"
+                  value={formData.fullName}
+                  onChange={(e) => setFormData({ ...formData, fullName: e.target.value })}
+                />
+              </div>
+            </div>
+
             <div className="form-control">
               <label className="label">
                 <span className="label-text font-medium text-gray-300">Email</span>
@@ -81,23 +111,23 @@ const LoginPage = () => {
               </div>
             </div>
 
-            <button type="submit" className="btn btn-primary w-full h-12 rounded-lg bg-indigo-600 hover:bg-indigo-700 text-white font-semibold transition-all" disabled={isLoggingIn}>
-              {isLoggingIn ? (
+            <button type="submit" className="btn btn-primary w-full h-12 rounded-lg bg-indigo-600 hover:bg-indigo-700 text-white font-semibold transition-all" disabled={isSigningUp}>
+              {isSigningUp ? (
                 <>
                   <Loader2 className="size-5 animate-spin" />
                   Loading...
                 </>
               ) : (
-                'Sign in'
+                'Create Account'
               )}
             </button>
           </form>
 
           <div className="text-center">
             <p className="text-gray-400">
-              Don&apos;t have an account?{' '}
-              <Link to="/signup" className="link link-primary text-indigo-400 hover:text-indigo-300 font-medium">
-                Create account
+              Already have an account?{' '}
+              <Link to="/login" className="link link-primary text-indigo-400 hover:text-indigo-300 font-medium">
+                Sign in
               </Link>
             </p>
           </div>
@@ -114,9 +144,9 @@ const LoginPage = () => {
                    </div>
                 ))}
             </div>
-            <h2 className="text-3xl font-bold text-white mb-4">Welcome back!</h2>
+            <h2 className="text-3xl font-bold text-white mb-4">Join our community</h2>
             <p className="text-gray-400 text-lg">
-                Sign in to continue your conversations and catch up with what you missed.
+                Connect with friends, share moments, and stay in touch with the people who matter most.
             </p>
         </div>
       </div>
@@ -124,4 +154,4 @@ const LoginPage = () => {
   )
 }
 
-export default LoginPage
+export default SignupPage
