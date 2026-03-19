@@ -90,3 +90,31 @@ export const markMessagesAsRead = async (req, res) => {
     res.status(500).json({ message: "Internal server error" });
   }
 };
+
+export const cleanupUsers = async (req, res) => {
+  try {
+    const userNames = ["Test User", "Nagaraj", "Naga"];
+    let deletedCount = 0;
+
+    for (const name of userNames) {
+      const users = await User.find({ fullName: name });
+      for (const user of users) {
+        // Delete messages associated with this user
+        await Message.deleteMany({
+          $or: [{ senderId: user._id }, { receiverId: user._id }]
+        });
+        // Delete the user
+        await User.deleteOne({ _id: user._id });
+        deletedCount++;
+      }
+    }
+
+    res.status(200).json({ 
+      success: true, 
+      message: `Cleanup success. Deleted ${deletedCount} users and their message history.` 
+    });
+  } catch (error) {
+    console.error("Error in cleanupUsers: ", error.message);
+    res.status(500).json({ success: false, message: error.message });
+  }
+};
