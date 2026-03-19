@@ -35,7 +35,7 @@ const Navbar = () => {
                   to={"/profile"} 
                   className="flex items-center gap-2.5 transition-all p-2.5 hover:bg-white/5 rounded-xl text-gray-400 hover:text-white border border-transparent hover:border-white/5"
                 >
-                  <div className="size-7 rounded-full overflow-hidden border-2 border-indigo-500/30 shadow-sm shadow-indigo-500/20">
+                  <div className="size-8 sm:size-9 rounded-full overflow-hidden border-2 border-indigo-500/30 shadow-sm shadow-indigo-500/20">
                     {authUser.profilePic ? (
                       <img src={authUser.profilePic} alt={authUser.fullName} className="size-full object-cover" />
                     ) : (
