@@ -23,10 +23,10 @@ const Sidebar = () => {
             <div className="border-b border-base-300 w-full p-5">
                 <div className="flex items-center gap-2">
                     <Users className="size-6 text-indigo-400" />
-                    <span className="font-medium hidden lg:block text-white">Contacts</span>
+                    <span className="font-medium flex sm:hidden lg:block text-white">Contacts</span>
                 </div>
                 {/* Online filter toggle */}
-                <div className="mt-3 hidden lg:flex items-center gap-2">
+                <div className="mt-3 flex sm:hidden lg:flex items-center gap-2">
                     <label className="cursor-pointer flex items-center gap-2">
                         <input
                             type="checkbox"
@@ -67,8 +67,8 @@ const Sidebar = () => {
                             )}
                         </div>
 
-                        {/* User info - only visible on larger screens */}
-                        <div className="hidden lg:flex flex-1 items-center justify-between min-w-0">
+                        {/* User info - visible on mobile (full width) and desktop, hidden on tablet strip */}
+                        <div className="flex sm:hidden lg:flex flex-1 items-center justify-between min-w-0">
                             <div className="text-left flex-1 min-w-0">
                                 <div className="font-semibold truncate text-slate-100 group-hover:text-white transition-colors">
                                     {user.fullName}
