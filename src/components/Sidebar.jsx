@@ -83,6 +83,11 @@ const Sidebar = () => {
                                         <span>Offline</span>
                                     )}
                                 </div>
+                                {user.lastMessage && (
+                                    <div className={`text-[11px] truncate mt-1 ${unreadCounts[user._id] > 0 ? "text-indigo-400 font-bold" : "text-slate-500 font-medium"}`}>
+                                        {user.lastMessage}
+                                    </div>
+                                )}
                             </div>
                             {unreadCounts[user._id] > 0 && (
                                 <div className="size-5 bg-indigo-500 text-white text-[10px] font-bold rounded-full flex items-center justify-center shadow-lg shadow-indigo-500/40 animate-bounce">

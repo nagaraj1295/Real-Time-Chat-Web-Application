@@ -64,7 +64,9 @@ export const useChatStore = create((set, get) => ({
       
       // 2. Replace optimistic message with actual data from server
       set({ 
-        messages: get().messages.map(m => m._id === optimisticMessage._id ? res.data : m)
+        messages: get().messages.map(m => m._id === optimisticMessage._id ? res.data : m),
+        // Update last message preview in users list
+        users: get().users.map(u => u._id === selectedUser._id ? { ...u, lastMessage: messageData.image ? "📷 Photo" : messageData.text } : u)
       });
     } catch (error) {
       // 3. Rollback on failure
@@ -74,29 +76,34 @@ export const useChatStore = create((set, get) => ({
   },
 
   subscribeToMessages: () => {
-    const { selectedUser } = get();
     const socket = useAuthStore.getState().socket;
 
     socket.on("newMessage", (newMessage) => {
-      const { users, unreadCounts, messages } = get();
+      const { users, unreadCounts, messages, selectedUser } = get();
       
       // 1. Find the user who sent the message
-      const sender = users.find(u => u._id === newMessage.senderId);
-      if (!sender) return; // Or handle if user not in list
+      const senderIndex = users.findIndex(u => u._id === newMessage.senderId);
+      if (senderIndex === -1) return;
 
-      // 2. Move sender to TOP of users list
-      const updatedUsers = [sender, ...users.filter(u => u._id !== sender._id)];
+      const sender = users[senderIndex];
       
-      // 3. Update messages if this is the active chat
-      const isMessageSentFromSelectedUser = selectedUser && newMessage.senderId === selectedUser._id;
+      // 2. Prepare message preview text
+      const lastMessageText = newMessage.image ? "📷 Photo" : newMessage.text;
+
+      // 3. Update the user object with the last message and move to TOP
+      const updatedUser = { ...sender, lastMessage: lastMessageText };
+      const updatedUsers = [updatedUser, ...users.filter(u => u._id !== sender._id)];
       
-      if (isMessageSentFromSelectedUser) {
+      // 4. Update messages if this is the active chat
+      const isMessageFromSelectedUser = selectedUser && newMessage.senderId === selectedUser._id;
+      
+      if (isMessageFromSelectedUser) {
         set({
           messages: [...messages, newMessage],
           users: updatedUsers
         });
       } else {
-        // 4. Increment unread count for this user
+        // 5. Increment unread count for this user
         const currentCount = unreadCounts[newMessage.senderId] || 0;
         set({
           unreadCounts: { ...unreadCounts, [newMessage.senderId]: currentCount + 1 },
