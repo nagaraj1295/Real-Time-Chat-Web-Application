@@ -18,7 +18,7 @@ const PORT = process.env.PORT || 5001;
 app.use(express.json());
 app.use(cookieParser());
 app.use(cors({
-    origin: ["http://localhost:5173", "http://localhost:5174"],
+    origin: process.env.NODE_ENV === "production" ? undefined : ["http://localhost:5173", "http://localhost:5174"],
     credentials: true,
 }));
 
@@ -26,10 +26,10 @@ app.use("/api/auth", authRoutes);
 app.use("/api/messages", messageRoutes);
 
 if (process.env.NODE_ENV === "production") {
-    app.use(express.static(path.join(__dirname, "../dist")));
+    app.use(express.static(path.join(__dirname, "dist")));
 
     app.get("*", (req, res) => {
-        res.sendFile(path.join(__dirname, "../dist", "index.html"));
+        res.sendFile(path.join(__dirname, "dist", "index.html"));
     });
 }
 
