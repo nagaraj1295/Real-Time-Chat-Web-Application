@@ -4,7 +4,7 @@ import dotenv from "dotenv";
 import cookieParser from "cookie-parser";
 import cors from "cors";
 
-import { connectDB } from "./lib/db.js";
+import { connectDB, connectionError } from "./lib/db.js";
 import { app, server } from "./lib/socket.js";
 
 import authRoutes from "./routes/auth.route.js";
@@ -38,6 +38,7 @@ app.get("/api/health", (req, res) => {
             NODE_ENV: process.env.NODE_ENV,
         },
         dbConnected: mongoose.connection.readyState === 1,
+        connectionError: connectionError,
     });
 });
 
