@@ -59,12 +59,11 @@ const Sidebar = () => {
                                     className="size-full object-cover"
                                 />
                             </div>
-                            {onlineUsers.includes(user._id) && (
-                                <span
-                                    className="absolute -bottom-0.5 -right-0.5 size-3.5 bg-emerald-500 
-                  border-2 border-slate-900 rounded-full shadow-sm"
-                                />
-                            )}
+                            <span
+                                className={`absolute -bottom-0.5 -right-0.5 size-3.5 border-2 border-slate-900 rounded-full shadow-sm ${
+                                  onlineUsers.includes(user._id) ? "bg-emerald-500" : "bg-slate-500"
+                                }`}
+                            />
                         </div>
 
                         {/* User info - visible on mobile (full width) and desktop, hidden on tablet strip */}
@@ -74,14 +73,7 @@ const Sidebar = () => {
                                     {user.fullName}
                                 </div>
                                 <div className="text-xs text-slate-400 group-hover:text-slate-300 transition-colors flex items-center gap-1.5 mt-0.5">
-                                    {onlineUsers.includes(user._id) ? (
-                                        <>
-                                            <span className="size-1.5 rounded-full bg-emerald-500 animate-pulse" />
-                                            <span>Active now</span>
-                                        </>
-                                    ) : (
-                                        <span>Offline</span>
-                                    )}
+                                    {/* Online status indicator removed as per request, kept logic for dot */}
                                 </div>
                                 {user.lastMessage && (
                                     <div className={`text-[11px] truncate mt-1 ${unreadCounts[user._id] > 0 ? "text-indigo-400 font-bold" : "text-slate-500 font-medium"}`}>
