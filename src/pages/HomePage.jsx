@@ -1,22 +1,24 @@
 import React from 'react'
 import Sidebar from '../components/Sidebar'
 import ChatContainer from '../components/ChatContainer'
-import RightSidebar from '../components/RightSidebar'
+import NoChatSelected from '../components/NoChatSelected'
+import { useChatStore } from '../store/useChatStore'
 
 const HomePage = () => {
-  const [selectedUser, setSelectedUser] = React.useState(false)
-
+  const { selectedUser } = useChatStore()
 
   return (
-    <>
-      <div className='border w-full h-screen sm:px-[15%] sm:py-[5%]'>
-      <div className={`backdrop-blur-xl border-2 border-gray-600 rounded-2xl overflow-hidden h-[100%] grid grid-cols-1 relative ${selectedUser ? 'md:grid-cols-[1fr_1.5fr_1fr] xl:grid-cols-[1fr_2fr_1fr]' : 'md:grid-cols-2'}`}>
-          <Sidebar />
-          <ChatContainer />
-          <RightSidebar />
+    <div className='h-screen bg-black/50'>
+      <div className='flex items-center justify-center pt-20 px-4'>
+        <div className='bg-slate-950/80 backdrop-blur-xl rounded-lg shadow-cl w-full max-w-6xl h-[calc(100vh-8rem)] overflow-hidden border border-white/10'>
+          <div className='flex h-full rounded-lg overflow-hidden'>
+            <Sidebar />
+            
+            {!selectedUser ? <NoChatSelected /> : <ChatContainer />}
+          </div>
         </div>
       </div>
-    </>
+    </div>
   )
 }
 

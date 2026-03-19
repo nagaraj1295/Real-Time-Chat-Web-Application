@@ -7,6 +7,7 @@ import SignupPage from './pages/SignupPage'
 import { useAuthStore } from './store/useAuthStore'
 import { Loader } from 'lucide-react'
 import { Toaster } from 'react-hot-toast'
+import Navbar from './components/Navbar'
 
 const App = () => {
   const { authUser, checkAuth, isCheckingAuth } = useAuthStore()
@@ -25,6 +26,7 @@ const App = () => {
 
   return (
     <div className='bg-[url("/src/assets/bgImage.jpg")] bg-contain min-h-screen'>
+      <Navbar />
       <Routes>
         <Route path="/" element={authUser ? <HomePage /> : <Navigate to="/login" />} />
         <Route path="/signup" element={!authUser ? <SignupPage /> : <Navigate to="/" />} />
