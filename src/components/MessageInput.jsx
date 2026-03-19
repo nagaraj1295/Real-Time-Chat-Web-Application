@@ -76,16 +76,18 @@ const MessageInput = () => {
             className={`flex btn btn-circle h-10 w-10 sm:h-11 sm:w-11 items-center justify-center rounded-xl bg-white/5 border border-white/5 hover:bg-white/10 transition-all active:scale-95
                      ${imagePreview ? "text-indigo-400" : "text-slate-400"}`}
             onClick={() => fileInputRef.current?.click()}
+            disabled={isSending}
           >
             <Image size={20} />
           </button>
           
           <input
             type="text"
-            className="flex-1 bg-transparent border-none text-white focus:outline-none placeholder:text-slate-500 text-[14px] sm:text-[15px] px-1 sm:px-2"
+            className="flex-1 bg-transparent border-none text-white focus:outline-none placeholder:text-slate-500 text-[14px] sm:text-[15px] px-1 sm:px-2 disabled:opacity-50"
             placeholder="Write a message..."
             value={text}
             onChange={(e) => setText(e.target.value)}
+            disabled={isSending}
           />
 
           <input
@@ -94,15 +96,20 @@ const MessageInput = () => {
             className="hidden"
             ref={fileInputRef}
             onChange={handleImageChange}
+            disabled={isSending}
           />
         </div>
         
         <button
           type="submit"
           className="h-11 w-11 sm:h-12 sm:w-12 flex items-center justify-center rounded-2xl bg-indigo-600 hover:bg-indigo-500 text-white transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed shadow-lg shadow-indigo-600/20 active:scale-90"
-          disabled={!text.trim() && !imagePreview}
+          disabled={(!text.trim() && !imagePreview) || isSending}
         >
-          <Send size={20} className={text.trim() || imagePreview ? "animate-pulse" : ""} />
+          {isSending ? (
+            <Loader2 size={20} className="animate-spin" />
+          ) : (
+            <Send size={20} className={text.trim() || imagePreview ? "animate-pulse" : ""} />
+          )}
         </button>
       </form>
     </div>

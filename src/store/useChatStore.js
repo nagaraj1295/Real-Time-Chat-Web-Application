@@ -10,6 +10,7 @@ export const useChatStore = create((set, get) => ({
   selectedUser: null,
   isUsersLoading: false,
   isMessagesLoading: false,
+  isSending: false,
 
   getUsers: async () => {
     set({ isUsersLoading: true });
@@ -41,6 +42,8 @@ export const useChatStore = create((set, get) => ({
     const { selectedUser, messages, users } = get();
     const { authUser } = useAuthStore.getState();
     
+    set({ isSending: true });
+
     // 1. Optimistic Update: Immediately add message locally
     const optimisticMessage = {
       _id: Date.now().toString(), // Temp ID
@@ -72,6 +75,8 @@ export const useChatStore = create((set, get) => ({
       // 3. Rollback on failure
       set({ messages: messages });
       toast.error(error.response.data.message);
+    } finally {
+      set({ isSending: false });
     }
   },
 
