@@ -5,7 +5,12 @@ import NoChatSelected from '../components/NoChatSelected'
 import { useChatStore } from '../store/useChatStore'
 
 const HomePage = () => {
-  const { selectedUser } = useChatStore()
+  const { selectedUser, subscribeToMessages, unsubscribeFromMessages } = useChatStore()
+
+  React.useEffect(() => {
+    subscribeToMessages()
+    return () => unsubscribeFromMessages()
+  }, [subscribeToMessages, unsubscribeFromMessages])
 
   return (
     <div className='h-screen bg-black/50'>
