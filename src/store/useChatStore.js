@@ -39,17 +39,36 @@ export const useChatStore = create((set, get) => ({
   },
   sendMessage: async (messageData) => {
     const { selectedUser, messages, users } = get();
+    const { authUser } = useAuthStore.getState();
+    
+    // 1. Optimistic Update: Immediately add message locally
+    const optimisticMessage = {
+      _id: Date.now().toString(), // Temp ID
+      senderId: authUser._id,
+      receiverId: selectedUser._id,
+      text: messageData.text,
+      image: messageData.image,
+      createdAt: new Date().toISOString(),
+      isOptimistic: true 
+    };
+
+    const updatedUsers = [selectedUser, ...users.filter(u => u._id !== selectedUser._id)];
+    
+    set({ 
+      messages: [...messages, optimisticMessage],
+      users: updatedUsers 
+    });
+
     try {
       const res = await axiosInstance.post(`/messages/send/${selectedUser._id}`, messageData);
       
-      // Move selected user to top of sidebar
-      const updatedUsers = [selectedUser, ...users.filter(u => u._id !== selectedUser._id)];
-      
+      // 2. Replace optimistic message with actual data from server
       set({ 
-        messages: [...messages, res.data],
-        users: updatedUsers 
+        messages: get().messages.map(m => m._id === optimisticMessage._id ? res.data : m)
       });
     } catch (error) {
+      // 3. Rollback on failure
+      set({ messages: messages });
       toast.error(error.response.data.message);
     }
   },

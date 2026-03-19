@@ -34,8 +34,14 @@ const Navbar = () => {
 
             {authUser && (
               <>
-                <Link to={"/profile"} className={`btn btn-sm gap-2 p-2 hover:bg-white/10 rounded-lg text-gray-300`}>
-                  <User className="size-5" />
+                <Link to={"/profile"} className="btn btn-sm gap-2 transition-all p-2 hover:bg-white/10 rounded-lg text-gray-300">
+                  <div className="size-6 rounded-full overflow-hidden border border-white/20 flex items-center justify-center">
+                    {authUser.profilePic ? (
+                      <img src={authUser.profilePic} alt={authUser.fullName} className="size-full object-cover" />
+                    ) : (
+                      <User className="size-4" />
+                    )}
+                  </div>
                   <span className="hidden sm:inline">Profile</span>
                 </Link>
 
