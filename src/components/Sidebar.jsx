@@ -6,7 +6,7 @@ import { Users } from 'lucide-react'
 import assets from '../assets/assets'
 
 const Sidebar = () => {
-    const { getUsers, users, selectedUser, setSelectedUser, isUsersLoading } = useChatStore()
+    const { getUsers, users, selectedUser, setSelectedUser, isUsersLoading, unreadCounts } = useChatStore()
     const { onlineUsers } = useAuthStore()
     const [showOnlineOnly, setShowOnlineOnly] = useState(false)
 
@@ -65,11 +65,18 @@ const Sidebar = () => {
                         </div>
 
                         {/* User info - only visible on larger screens */}
-                        <div className="hidden lg:block text-left min-w-0">
-                            <div className="font-medium truncate text-gray-100">{user.fullName}</div>
-                            <div className="text-sm text-zinc-400">
-                                {onlineUsers.includes(user._id) ? "Online" : "Offline"}
+                        <div className="hidden lg:flex flex-1 items-center justify-between min-w-0">
+                            <div className="text-left">
+                                <div className="font-medium truncate text-gray-100">{user.fullName}</div>
+                                <div className="text-sm text-zinc-400">
+                                    {onlineUsers.includes(user._id) ? "Online" : "Offline"}
+                                </div>
                             </div>
+                            {unreadCounts[user._id] > 0 && (
+                                <div className="size-5 bg-indigo-500 text-white text-[10px] font-bold rounded-full flex items-center justify-center">
+                                    {unreadCounts[user._id]}
+                                </div>
+                            )}
                         </div>
                     </button>
                 ))}

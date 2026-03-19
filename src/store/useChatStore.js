@@ -6,6 +6,7 @@ import { useAuthStore } from "./useAuthStore";
 export const useChatStore = create((set, get) => ({
   messages: [],
   users: [],
+  unreadCounts: {}, // { userId: count }
   selectedUser: null,
   isUsersLoading: false,
   isMessagesLoading: false,
@@ -26,7 +27,10 @@ export const useChatStore = create((set, get) => ({
     set({ isMessagesLoading: true });
     try {
       const res = await axiosInstance.get(`/messages/${userId}`);
-      set({ messages: res.data });
+      set({ 
+        messages: res.data,
+        unreadCounts: { ...get().unreadCounts, [userId]: 0 } // Clear unread count when opening chat
+      });
     } catch (error) {
       toast.error(error.response.data.message);
     } finally {
@@ -34,10 +38,17 @@ export const useChatStore = create((set, get) => ({
     }
   },
   sendMessage: async (messageData) => {
-    const { selectedUser, messages } = get();
+    const { selectedUser, messages, users } = get();
     try {
       const res = await axiosInstance.post(`/messages/send/${selectedUser._id}`, messageData);
-      set({ messages: [...messages, res.data] });
+      
+      // Move selected user to top of sidebar
+      const updatedUsers = [selectedUser, ...users.filter(u => u._id !== selectedUser._id)];
+      
+      set({ 
+        messages: [...messages, res.data],
+        users: updatedUsers 
+      });
     } catch (error) {
       toast.error(error.response.data.message);
     }
@@ -45,17 +56,34 @@ export const useChatStore = create((set, get) => ({
 
   subscribeToMessages: () => {
     const { selectedUser } = get();
-    if (!selectedUser) return;
-
     const socket = useAuthStore.getState().socket;
 
     socket.on("newMessage", (newMessage) => {
-      const isMessageSentFromSelectedUser = newMessage.senderId === selectedUser._id;
-      if (!isMessageSentFromSelectedUser) return;
+      const { users, unreadCounts, messages } = get();
+      
+      // 1. Find the user who sent the message
+      const sender = users.find(u => u._id === newMessage.senderId);
+      if (!sender) return; // Or handle if user not in list
 
-      set({
-        messages: [...get().messages, newMessage],
-      });
+      // 2. Move sender to TOP of users list
+      const updatedUsers = [sender, ...users.filter(u => u._id !== sender._id)];
+      
+      // 3. Update messages if this is the active chat
+      const isMessageSentFromSelectedUser = selectedUser && newMessage.senderId === selectedUser._id;
+      
+      if (isMessageSentFromSelectedUser) {
+        set({
+          messages: [...messages, newMessage],
+          users: updatedUsers
+        });
+      } else {
+        // 4. Increment unread count for this user
+        const currentCount = unreadCounts[newMessage.senderId] || 0;
+        set({
+          unreadCounts: { ...unreadCounts, [newMessage.senderId]: currentCount + 1 },
+          users: updatedUsers
+        });
+      }
     });
   },
 
@@ -64,5 +92,15 @@ export const useChatStore = create((set, get) => ({
     socket.off("newMessage");
   },
 
-  setSelectedUser: (selectedUser) => set({ selectedUser }),
+  setSelectedUser: (selectedUser) => {
+    if (selectedUser) {
+      // Clear unread count when selecting user
+      set({ 
+        selectedUser,
+        unreadCounts: { ...get().unreadCounts, [selectedUser._id]: 0 }
+      });
+    } else {
+      set({ selectedUser });
+    }
+  },
 }));
