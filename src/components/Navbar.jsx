@@ -9,9 +9,9 @@ const Navbar = () => {
     <header
       className="glass-navbar fixed w-full top-0 z-40 transition-all duration-300"
     >
-      <div className="container mx-auto px-6 h-20">
+      <div className="container mx-auto px-4 sm:px-6 h-16 sm:h-20">
         <div className="flex items-center justify-between h-full">
-          <div className="flex items-center gap-8">
+          <div className="flex items-center gap-4 sm:gap-8">
             <Link to="/" className="flex items-center gap-3 hover:opacity-80 transition-all group">
               <div className="size-10 rounded-xl bg-indigo-500/20 flex items-center justify-center group-hover:scale-110 transition-transform duration-300 shadow-lg shadow-indigo-500/10">
                 <MessageSquare className="w-6 h-6 text-indigo-400" />
