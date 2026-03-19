@@ -23,29 +23,32 @@ const ProfilePage = () => {
   }
 
   return (
-    <div className='h-screen pt-20 bg-black/50'>
-      <div className='max-w-2xl mx-auto p-4 py-8'>
-        <div className='bg-slate-900/60 backdrop-blur-xl rounded-xl p-6 space-y-8 border border-white/10'>
-          <div className='text-center'>
-            <h1 className='text-2xl font-bold text-white'>Profile</h1>
-            <p className='mt-2 text-gray-400'>Your profile information</p>
+    <div className='min-h-screen pt-28 pb-12 overflow-y-auto px-4'>
+      <div className='max-w-2xl mx-auto'>
+        <div className='glass-card rounded-3xl p-8 space-y-10 animate-fade-in'>
+          <div className='text-center space-y-2'>
+            <h1 className='text-3xl font-extrabold text-white tracking-tight'>Profile Settings</h1>
+            <p className='text-slate-400 text-sm'>Customize your personal presence</p>
           </div>
 
           {/* Avatar Upload Section */}
-          <div className='flex flex-col items-center gap-4'>
-            <div className='relative'>
-              <img
-                src={selectedImg || authUser.profilePic || assets.avatar_icon}
-                alt='Profile'
-                className='size-32 rounded-full object-cover border-4 border-indigo-600/20'
-              />
+          <div className='flex flex-col items-center gap-6'>
+            <div className='relative group'>
+              <div className="size-36 rounded-[2.5rem] overflow-hidden border-4 border-indigo-500/20 shadow-2xl shadow-indigo-500/10 group-hover:border-indigo-500/40 transition-all duration-300">
+                <img
+                  src={selectedImg || authUser.profilePic || assets.avatar_icon}
+                  alt='Profile'
+                  className='size-full object-cover group-hover:scale-110 transition-transform duration-500'
+                />
+              </div>
               <label
                 htmlFor='avatar-upload'
                 className={`
-                  absolute bottom-0 right-0 
-                  bg-indigo-600 hover:scale-105
-                  p-2 rounded-full cursor-pointer 
-                  transition-all duration-200
+                  absolute -bottom-2 -right-2 
+                  bg-indigo-600 hover:bg-indigo-500
+                  p-3 rounded-2xl cursor-pointer 
+                  transition-all duration-300 shadow-xl shadow-indigo-600/30
+                  active:scale-90
                   ${isUpdatingProfile ? 'animate-pulse pointer-events-none' : ''}
                 `}
               >
@@ -60,43 +63,49 @@ const ProfilePage = () => {
                 />
               </label>
             </div>
-            <p className='text-sm text-gray-400'>
-              {isUpdatingProfile ? 'Uploading...' : 'Click the camera icon to update your photo'}
-            </p>
+            <div className='text-center'>
+               <p className='text-sm font-medium text-slate-300'>
+                {isUpdatingProfile ? 'Syncing with cloud...' : 'Click icons to swap your photo'}
+              </p>
+              <p className="text-[10px] text-slate-500 mt-1 uppercase tracking-widest font-bold">Max size 10MB</p>
+            </div>
           </div>
 
-          <div className='space-y-6'>
-            <div className='space-y-1.5'>
-              <div className='text-sm text-gray-400 flex items-center gap-2'>
-                <User className='w-4 h-4' />
+          <div className='grid gap-6 sm:grid-cols-2'>
+            <div className='space-y-2'>
+              <div className='text-xs font-bold text-slate-500 uppercase tracking-wider flex items-center gap-2'>
+                <User className='w-3.5 h-3.5' />
                 Full Name
               </div>
-              <p className='px-4 py-2.5 bg-white/5 rounded-lg border border-white/10 text-white'>
+              <div className='px-5 py-3.5 bg-white/5 rounded-2xl border border-white/5 text-slate-100 font-medium'>
                 {authUser?.fullName}
-              </p>
+              </div>
             </div>
 
-            <div className='space-y-1.5'>
-              <div className='text-sm text-gray-400 flex items-center gap-2'>
-                <Mail className='w-4 h-4' />
+            <div className='space-y-2'>
+              <div className='text-xs font-bold text-slate-500 uppercase tracking-wider flex items-center gap-2'>
+                <Mail className='w-3.5 h-3.5' />
                 Email Address
               </div>
-              <p className='px-4 py-2.5 bg-white/5 rounded-lg border border-white/10 text-white'>
+              <div className='px-5 py-3.5 bg-white/5 rounded-2xl border border-white/5 text-slate-100 font-medium'>
                 {authUser?.email}
-              </p>
+              </div>
             </div>
           </div>
 
-          <div className='mt-6 bg-white/5 rounded-xl p-6 border border-white/10'>
-            <h2 className='text-lg font-medium mb-4 text-white'>Account Information</h2>
-            <div className='space-y-3 text-sm'>
-              <div className='flex items-center justify-between py-2 border-b border-white/5'>
-                <span className='text-gray-400'>Member Since</span>
-                <span className='text-white'>{authUser.createdAt?.split('T')[0]}</span>
+          <div className='bg-indigo-500/5 rounded-[2rem] p-6 border border-indigo-500/10'>
+            <h2 className='text-sm font-bold uppercase tracking-widest text-indigo-400 mb-6'>Account Insights</h2>
+            <div className='space-y-4'>
+              <div className='flex items-center justify-between pb-3 border-b border-indigo-500/5'>
+                <span className='text-slate-400 text-sm'>Joined Community</span>
+                <span className='text-slate-200 text-sm font-semibold'>{authUser.createdAt?.split('T')[0]}</span>
               </div>
-              <div className='flex items-center justify-between py-2'>
-                <span className='text-gray-400'>Account Status</span>
-                <span className='text-green-500'>Active</span>
+              <div className='flex items-center justify-between'>
+                <span className='text-slate-400 text-sm'>Verification Status</span>
+                <span className='flex items-center gap-1.5 text-emerald-400 text-sm font-bold'>
+                  <div className="size-1.5 rounded-full bg-emerald-400 animate-pulse" />
+                  Verified Member
+                </span>
               </div>
             </div>
           </div>

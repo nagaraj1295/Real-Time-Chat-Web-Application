@@ -55,21 +55,25 @@ const ChatContainer = () => {
                 />
               </div>
             </div>
-            <div className='flex flex-col gap-1 max-w-[70%]'>
-              <div className='chat-header mb-1'>
-                <time className='text-xs opacity-50 ml-1 text-gray-400'>
-                  {formatMessageTime(message.createdAt)}
-                </time>
-              </div>
-              <div className={`chat-bubble flex flex-col gap-2 p-3 rounded-2xl ${message.senderId === authUser._id ? 'bg-indigo-600 text-white' : 'bg-white/10 text-white'}`}>
+            <div className='flex flex-col gap-1.5 max-w-[80%]'>
+              <div className={`flex flex-col gap-2 p-4 rounded-2xl shadow-sm ${
+                message.senderId === authUser._id 
+                  ? 'bg-indigo-600 text-white rounded-tr-none' 
+                  : 'bg-white/10 text-white rounded-tl-none border border-white/5'
+              }`}>
                 {message.image && (
                   <img
                     src={message.image}
                     alt='Attachment'
-                    className='sm:max-w-[200px] rounded-md mb-2'
+                    className='rounded-xl max-w-full h-auto object-cover mb-1'
                   />
                 )}
-                {message.text && <p>{message.text}</p>}
+                {message.text && <p className="text-[15px] leading-relaxed">{message.text}</p>}
+                <div className='flex justify-end mt-1'>
+                  <time className='text-[10px] opacity-40 uppercase font-bold tracking-wider'>
+                    {formatMessageTime(message.createdAt)}
+                  </time>
+                </div>
               </div>
             </div>
           </div>

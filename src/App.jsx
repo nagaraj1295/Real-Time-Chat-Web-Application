@@ -25,7 +25,8 @@ const App = () => {
   }
 
   return (
-    <div className='bg-[url("/src/assets/bgImage.jpg")] bg-contain min-h-screen'>
+    <div className='min-h-screen relative'>
+      <div className="mesh-gradient" />
       <Navbar />
       <Routes>
         <Route path="/" element={authUser ? <HomePage /> : <Navigate to="/login" />} />

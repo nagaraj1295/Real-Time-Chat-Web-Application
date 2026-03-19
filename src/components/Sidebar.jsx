@@ -39,41 +39,53 @@ const Sidebar = () => {
                 </div>
             </div>
 
-            <div className="overflow-y-auto w-full py-3">
+            <div className="overflow-y-auto w-full py-4 px-3 space-y-2">
                 {filteredUsers.map((user) => (
                     <button
                         key={user._id}
                         onClick={() => setSelectedUser(user)}
                         className={`
-              w-full p-3 flex items-center gap-3
-              hover:bg-white/5 transition-colors
-              ${selectedUser?._id === user._id ? "bg-indigo-600/20 ring-1 ring-white/10" : ""}
+              w-full p-3 flex items-center gap-4 rounded-2xl transition-all duration-300 group
+              ${selectedUser?._id === user._id 
+                ? "bg-indigo-600/20 ring-1 ring-white/10 shadow-lg shadow-indigo-500/5" 
+                : "hover:bg-white/5 border border-transparent hover:border-white/5"}
             `}
                     >
                         <div className="relative mx-auto lg:mx-0">
-                            <img
-                                src={user.profilePic || assets.avatar_icon}
-                                alt={user.name}
-                                className="size-12 object-cover rounded-full"
-                            />
+                            <div className="size-12 rounded-2xl overflow-hidden border border-white/10 group-hover:scale-105 transition-transform duration-300">
+                                <img
+                                    src={user.profilePic || assets.avatar_icon}
+                                    alt={user.fullName}
+                                    className="size-full object-cover"
+                                />
+                            </div>
                             {onlineUsers.includes(user._id) && (
                                 <span
-                                    className="absolute bottom-0 right-0 size-3 bg-green-500 
-                  border-2 border-zinc-900 rounded-full"
+                                    className="absolute -bottom-0.5 -right-0.5 size-3.5 bg-emerald-500 
+                  border-2 border-slate-900 rounded-full shadow-sm"
                                 />
                             )}
                         </div>
 
                         {/* User info - only visible on larger screens */}
                         <div className="hidden lg:flex flex-1 items-center justify-between min-w-0">
-                            <div className="text-left">
-                                <div className="font-medium truncate text-gray-100">{user.fullName}</div>
-                                <div className="text-sm text-zinc-400">
-                                    {onlineUsers.includes(user._id) ? "Online" : "Offline"}
+                            <div className="text-left flex-1 min-w-0">
+                                <div className="font-semibold truncate text-slate-100 group-hover:text-white transition-colors">
+                                    {user.fullName}
+                                </div>
+                                <div className="text-xs text-slate-400 group-hover:text-slate-300 transition-colors flex items-center gap-1.5 mt-0.5">
+                                    {onlineUsers.includes(user._id) ? (
+                                        <>
+                                            <span className="size-1.5 rounded-full bg-emerald-500 animate-pulse" />
+                                            <span>Active now</span>
+                                        </>
+                                    ) : (
+                                        <span>Offline</span>
+                                    )}
                                 </div>
                             </div>
                             {unreadCounts[user._id] > 0 && (
-                                <div className="size-5 bg-indigo-500 text-white text-[10px] font-bold rounded-full flex items-center justify-center">
+                                <div className="size-5 bg-indigo-500 text-white text-[10px] font-bold rounded-full flex items-center justify-center shadow-lg shadow-indigo-500/40 animate-bounce">
                                     {unreadCounts[user._id]}
                                 </div>
                             )}
