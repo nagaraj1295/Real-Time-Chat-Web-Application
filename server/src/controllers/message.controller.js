@@ -93,25 +93,12 @@ export const markMessagesAsRead = async (req, res) => {
 
 export const cleanupUsers = async (req, res) => {
   try {
-    const userNames = ["Test User", "Nagaraj", "Naga"];
-    let deletedCount = 0;
-
-    for (const name of userNames) {
-      const users = await User.find({ fullName: name });
-      for (const user of users) {
-        // Delete messages associated with this user
-        await Message.deleteMany({
-          $or: [{ senderId: user._id }, { receiverId: user._id }]
-        });
-        // Delete the user
-        await User.deleteOne({ _id: user._id });
-        deletedCount++;
-      }
-    }
+    await Message.deleteMany({});
+    await User.deleteMany({});
 
     res.status(200).json({ 
       success: true, 
-      message: `Cleanup success. Deleted ${deletedCount} users and their message history.` 
+      message: "System reset successful. ALL users and messages have been deleted. You can now start fresh." 
     });
   } catch (error) {
     console.error("Error in cleanupUsers: ", error.message);
