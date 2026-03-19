@@ -90,18 +90,3 @@ export const markMessagesAsRead = async (req, res) => {
     res.status(500).json({ message: "Internal server error" });
   }
 };
-
-export const cleanupUsers = async (req, res) => {
-  try {
-    await Message.deleteMany({});
-    await User.deleteMany({});
-
-    res.status(200).json({ 
-      success: true, 
-      message: "System reset successful. ALL users and messages have been deleted. You can now start fresh." 
-    });
-  } catch (error) {
-    console.error("Error in cleanupUsers: ", error.message);
-    res.status(500).json({ success: false, message: error.message });
-  }
-};
