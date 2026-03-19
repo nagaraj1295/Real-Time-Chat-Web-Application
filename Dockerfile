@@ -1,5 +1,5 @@
-# Use Node.js 20 as base
-FROM node:20-alpine AS build
+# Use Node.js 22 as base
+FROM node:22-alpine AS build
 
 # Set working directory
 WORKDIR /app
@@ -19,7 +19,7 @@ COPY . .
 RUN npm run build
 
 # Final stage
-FROM node:20-alpine
+FROM node:22-alpine
 WORKDIR /app
 
 # Copy built frontend and backend code
